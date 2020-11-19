@@ -31,16 +31,12 @@ const PostsComponent = () => {
         setId(postToFind.id);
         setPostTitle(postTitle);
         setPostBody(postBody);
-        console.log("this is id", id);
-        console.log("this is title", postTitle);
-        console.log("this is body", postBody);
     }
 
     const handleSubmit = () => {
         if(id) {
             const index = posts.findIndex(post => post.id === id);
             const newPosts = [...posts];
-            console.log(index);
             newPosts[index] = {
                 ...newPosts[index],
                 postTitle: postTitle,
@@ -51,7 +47,6 @@ const PostsComponent = () => {
             setPostTitle("");
             setPostBody("");
             setId(null);
-            console.log(newPosts);
         }
         else {
             const newPost = {
