@@ -2,43 +2,77 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import MappedPostComponent from "./MappedPostComponent";
 import { useDispatch } from "react-redux";
-import { addPost } from "../redux/ActionCreators";
+import { addPost, deletePost, editPost } from "../redux/ActionCreators";
 
 const ReduxPostComponent = () => {
 
     const dispatch = useDispatch();
-    const posts = useSelector(state => state.posts.posts);
+    const postsList = useSelector(state => state.posts.posts);
 
+    const [id, setId] = useState(null);
     const [postTitle, setPostTitle] = useState("");
     const [postBody, setPostBody] = useState("");
 
-    const mappedPosts = posts.map(post => {
+
+    const deleteSelectedPost = (postId) => {
+        dispatch(deletePost(postId));
+    } 
+
+    const findPostToEdit = (postId) => {
+        const postToFind = postsList.filter(post => post.id === postId)[0];
+
+        setId(postToFind.id);
+        setPostTitle(postToFind.postTitle);
+        setPostBody(postToFind.postBody);
+    }
+
+    const mappedPosts = postsList.map(post => {
         return(
-            <MappedPostComponent post={post} key={post.id} />
+            <MappedPostComponent post={post} key={post.id} deleteSelectedPost={deleteSelectedPost} findPostToEdit={findPostToEdit} />
         );
     });
 
     const handleTitleChange = (e) => {
         const value = e.target.value;
         setPostTitle(value);
-        console.log(postTitle);
     }
 
     const handleBodyChange = (e) => {
         const value = e.target.value;
         setPostBody(value);
-        console.log(postBody);
     }
 
     const handleSubmit = () => {
-        const newPost = {
-            id: Date.now(),
-            postTitle: postTitle,
-            postBody: postBody
-        }
+        if(id !== null) {
+            const postsCopy = [...postsList];
+            const index = postsCopy.findIndex(post => post.id === id);
 
-        dispatch(addPost(newPost));
+            postsCopy[index] = {
+                ...postsCopy[index],
+                id: id,
+                postTitle: postTitle,
+                postBody: postBody
+            }
+           
+            setId(null);
+            setPostTitle("");
+            setPostBody("");
+            dispatch(editPost(postsCopy));
+        }
+        else {
+            const newPost = {
+                id: Date.now(),
+                postTitle: postTitle,
+                postBody: postBody
+            }
+    
+            dispatch(addPost(newPost));
+            setPostTitle("");
+            setPostBody("");
+        }
     }
+
+
 
     return(
         <div>
