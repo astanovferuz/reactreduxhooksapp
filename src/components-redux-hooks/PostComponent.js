@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import MappedPostComponent from "./MappedPostComponent";
 import { useDispatch } from "react-redux";
@@ -9,9 +9,15 @@ const ReduxPostComponent = () => {
     const dispatch = useDispatch();
     const postsList = useSelector(state => state.posts.posts);
 
+    const [posts, setPosts] = useState([]);
     const [id, setId] = useState(null);
     const [postTitle, setPostTitle] = useState("");
     const [postBody, setPostBody] = useState("");
+
+    useEffect(() => {
+        setPosts(postsList)
+    }, [postsList], console.log(posts)
+    );
 
 
     const deleteSelectedPost = (postId) => {
@@ -26,7 +32,7 @@ const ReduxPostComponent = () => {
         setPostBody(postToFind.postBody);
     }
 
-    const mappedPosts = postsList.map(post => {
+    const mappedPosts = posts.map(post => {
         return(
             <MappedPostComponent post={post} key={post.id} deleteSelectedPost={deleteSelectedPost} findPostToEdit={findPostToEdit} />
         );
@@ -44,7 +50,7 @@ const ReduxPostComponent = () => {
 
     const handleSubmit = () => {
         if(id !== null) {
-            const postsCopy = [...postsList];
+            const postsCopy = [...posts];
             const index = postsCopy.findIndex(post => post.id === id);
 
             postsCopy[index] = {

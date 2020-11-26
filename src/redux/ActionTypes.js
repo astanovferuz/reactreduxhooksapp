@@ -3,3 +3,4 @@ export const DELETE_POST = "DELETE_POST";
 export const EDIT_POST = "EDIT_POST";
 
 export const FETCH_ADD_POST = "FETCH_ADD_POST";
+export const POST_NEW_POST = "POST_NEW_POST";
