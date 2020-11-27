@@ -4,3 +4,5 @@ export const EDIT_POST = "EDIT_POST";
 
 export const FETCH_ADD_POST = "FETCH_ADD_POST";
 export const POST_NEW_POST = "POST_NEW_POST";
+export const DELETE_FETCH_POST = "DELETE_FETCH_POST";
+export const FETCH_EDIT_POST = "FETCH_EDIT_POST";

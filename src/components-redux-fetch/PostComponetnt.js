@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchPosts, postPost } from "../2redux/ActionCreators";
+import { fetchPosts, postPost, deletePost, editPost } from "../2redux/ActionCreators";
 import MappedPost from "./MappedPostComponent";
 
 const ReduxFetchPostComponent = () => {
 
+    const [id, setId] = useState(null);
     const [postTitle, setPostTitle] = useState("");
     const [postBody, setPostBody] = useState("");
 
@@ -15,9 +16,19 @@ const ReduxFetchPostComponent = () => {
         dispatch(fetchPosts())
     }, []);
 
+    const handleDelete = (id) => {
+        dispatch(deletePost(id))
+    }
+
+    const setEditPost = (post) => {
+        setId(post.id);
+        setPostTitle(post.postTitle);
+        setPostBody(post.postBody);
+    }
+
     const mappedPosts = postsData.map(post => {
         return(
-            <MappedPost key={post.id} post={post} />
+            <MappedPost key={post.id} post={post} handleDelete={handleDelete} setEditPost={setEditPost}/>
         )
     });
 
@@ -30,15 +41,29 @@ const ReduxFetchPostComponent = () => {
     }
 
     const handleSubmit = () => {
-        dispatch(postPost(postTitle, postBody));
+        if(id !== null) {
+            const postToUpdate = {
+                id: id,
+                postTitle: postTitle,
+                postBody: postBody
+            }
+            dispatch(editPost(postToUpdate));
+            setId(null);
+            setPostTitle("");
+            setPostBody("");
+        } else {
+            dispatch(postPost(postTitle, postBody));
+            setId(null);
+            setPostTitle("");
+            setPostBody("");
+        }
     }
-
 
     return(
         <div>
             <h1>React Hooks Fetch Version</h1>
-            <input onChange={handleTitleChange} type="text" name="postTitle" placeholder="enter title" />
-            <input onChange={handleBodyChange} type="text" name="postBody" placeholder="enter body" />
+            <input onChange={handleTitleChange} value={postTitle} type="text" name="postTitle" placeholder="enter title" />
+            <input onChange={handleBodyChange} value={postBody} type="text" name="postBody" placeholder="enter body" />
             <button onClick={handleSubmit} type="button">Submit</button>
             {mappedPosts}
         </div>
